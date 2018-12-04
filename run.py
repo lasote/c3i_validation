@@ -39,15 +39,13 @@ def process():
     folder = tempfile.mkdtemp(suffix='c3i')
     with tools.environment_append({"CONAN_USER_HOME": folder,
                                    "CONAN_USERNAME": "conan",
-                                   "CONAN_USE_DOCKER": "1",
+                                   "CONAN_USE_DOCKER":
+                                       "1" if platform.system() == "Linux" else "0",
                                    "CONAN_DOCKER_USE_SUDO": "0"}):
-        if platform.system() == "Linux":
-            confs = linux_builds()
-        elif platform.system() == "Darwin":
-            confs = macos_builds()
-        elif platform.system() == "Windows":
-            confs = windows_builds()
-        else:
+        confs = {"Linux": linux_builds(),
+                 "Darwin": macos_builds(),
+                 "Windows": windows_builds()}.get(platform.system(), None)
+        if confs is None:
             raise Exception("Unknown platform: %s" % platform.system())
 
         for url_repo, builds in confs.items():
