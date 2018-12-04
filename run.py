@@ -37,11 +37,13 @@ def windows_builds():
 
 def process():
     folder = tempfile.mkdtemp(suffix='c3i')
-    with tools.environment_append({"CONAN_USER_HOME": folder,
-                                   "CONAN_USERNAME": "conan",
-                                   "CONAN_USE_DOCKER":
-                                       "1" if platform.system() == "Linux" else "0",
-                                   "CONAN_DOCKER_USE_SUDO": "0"}):
+    env = {"CONAN_USER_HOME": folder,
+           "CONAN_USERNAME": "conan",
+           "CONAN_DOCKER_USE_SUDO": "0"}
+    if platform.system() == "Linux":
+        env["CONAN_USE_DOCKER"] = "1"
+
+    with tools.environment_append(env):
         confs = {"Linux": linux_builds(),
                  "Darwin": macos_builds(),
                  "Windows": windows_builds()}.get(platform.system(), None)
