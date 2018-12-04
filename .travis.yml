@@ -1,12 +1,22 @@
+linux: &linux
+   os: linux
+   language: python
+   python: "3.7"
+   services:
+     - docker
+osx: &osx
+   os: osx
+   language: generic
 matrix:
-  include:
-    - os: linux
-      python:
-        - "3.6"
-    - os: osx
-language: python
+   include:
 
+      - <<: *linux
+      - <<: *osx
+        osx_image: xcode10
 install:
-  - pip install -r requirements.txt
+  - chmod +x .travis/install.sh
+  - ./.travis/install.sh
+
 script:
-  - .travis/run.sh
+  - chmod +x .travis/run.sh
+  - ./.travis/run.sh
