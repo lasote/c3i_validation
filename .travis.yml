@@ -9,7 +9,6 @@ osx: &osx
    language: generic
 matrix:
    include:
-
       - <<: *linux
       - <<: *osx
         osx_image: xcode10
