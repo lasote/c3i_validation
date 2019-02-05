@@ -36,6 +36,13 @@ def windows_builds():
     return {"https://github.com/conan-community/conan-zlib.git": [b1, b2]}
 
 def process():
+    
+    # Check virtualenv
+    if platform.system() == "Linux":
+        ret = os.system("virtualenv --help")
+        if ret != 0:
+            raise Exception("virtualenv is needed in Linux")
+    
     folder = tempfile.mkdtemp(suffix='c3i')
     env = {"CONAN_USER_HOME": folder,
            "CONAN_USERNAME": "conan",
