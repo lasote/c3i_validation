@@ -2,7 +2,6 @@ import os
 import platform
 import tempfile
 
-from cpt.packager import ConanMultiPackager
 
 from conans import tools
 
@@ -35,6 +34,7 @@ def windows_builds():
            "arch": "x86_64"}, {}, {}, {})
     return {"https://github.com/conan-community/conan-zlib.git": [b1, b2]}
 
+
 def process():
     
     # Check virtualenv
@@ -45,10 +45,7 @@ def process():
     
     folder = tempfile.mkdtemp(suffix='c3i')
     env = {"CONAN_USER_HOME": folder,
-           "CONAN_USERNAME": "conan",
-           "CONAN_DOCKER_USE_SUDO": "0"}
-    if platform.system() == "Linux":
-        env["CONAN_USE_DOCKER"] = "1"
+           "CONAN_USERNAME": "conan"}
 
     with tools.environment_append(env):
         confs = {"Linux": linux_builds(),
@@ -61,9 +58,7 @@ def process():
             pname = url_repo.split("/")[-1].replace(".git", "")
             os.system("git clone %s %s" % (url_repo, pname))
             with tools.chdir(pname):
-                builder = ConanMultiPackager()
-                builder.builds = builds
-                builder.run()
+                os.system("conan create . user/channel")
 
 
 if __name__ == "__main__":
